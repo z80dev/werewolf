@@ -63,11 +63,11 @@ rebuild_games_json() {
     entries=$((entries + 1))
   done
 
-  jq -s --arg updated "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --arg live "$live_id" '
+  jq -s --arg updated "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --arg live "$live_id" --argjson keep "$KEEP_GAMES" '
     {
       updated_at: $updated,
       live: (if $live == "" then null else $live end),
-      games: (map(select(.started_at != null)) | sort_by(.started_at) | reverse | .[0:50])
+      games: (map(select(.started_at != null)) | sort_by(.started_at) | reverse | .[0:$keep])
     }' "$tmp" > "$GAMES_JSON.tmp" || { rm -f "$tmp"; return 1; }
   mv "$GAMES_JSON.tmp" "$GAMES_JSON"
   rm -f "$tmp"

@@ -1,49 +1,67 @@
 <!doctype html>
 <html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Werewolf Stream — AI vs AI</title>
-<meta name="description" content="Omniscient spectator view for AI-vs-AI werewolf games.">
-<link rel="stylesheet" href="style.css">
-</head>
-<body>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Werewolf Stream — AI vs AI</title>
+    <meta
+      name="description"
+      content="Omniscient spectator view for AI-vs-AI werewolf games."
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="#/">
+        <span class="moon" aria-hidden="true"></span>
+        <span class="brand-text">
+          <span class="brand-name">Werewolf Stream</span>
+          <span class="brand-tag">AI vs AI · omniscient spectator</span>
+        </span>
+      </a>
+      <span id="net-status" class="net-status" role="status"></span>
+    </header>
 
-<header class="site-header">
-  <a class="brand" href="#/">
-    <span class="moon" aria-hidden="true"></span>
-    <span class="brand-text">
-      <span class="brand-name">Werewolf Stream</span>
-      <span class="brand-tag">AI vs AI · omniscient spectator</span>
-    </span>
-  </a>
-  <span id="net-status" class="net-status" role="status"></span>
-</header>
+    <main id="app">
+      <section id="home-view" aria-label="Games">
+        <div id="game-list" class="game-list"></div>
+      </section>
 
-<main id="app">
+      <section id="game-view" hidden aria-label="Spectator view">
+        <nav class="game-nav">
+          <a href="#/" class="back-link">&larr; all games</a>
+          <span id="game-id" class="game-id"></span>
+          <span id="game-status" class="status-badge"></span>
+        </nav>
+        <div
+          id="phase-banner"
+          class="phase-banner"
+          role="heading"
+          aria-level="2"
+        ></div>
+        <div id="winner-banner" class="winner-banner" hidden></div>
+        <div id="cast-head" class="cast-head" hidden>
+          <button
+            id="cast-toggle"
+            class="cast-toggle"
+            type="button"
+            aria-expanded="true"
+            aria-controls="roster"
+          >
+            <span class="cast-caret" aria-hidden="true"></span>
+            <span class="cast-title">The Cast</span>
+            <span id="cast-counts" class="cast-counts"></span>
+          </button>
+        </div>
+        <div id="roster" class="roster" aria-label="Players"></div>
+        <div id="feed" class="feed" role="log" aria-label="Game events"></div>
+      </section>
+    </main>
 
-  <section id="home-view" aria-label="Games">
-    <div id="game-list" class="game-list"></div>
-  </section>
+    <footer class="site-footer">
+      <span>games by LemonSim &middot; every seat played by an AI</span>
+    </footer>
 
-  <section id="game-view" hidden aria-label="Spectator view">
-    <nav class="game-nav">
-      <a href="#/" class="back-link">&larr; all games</a>
-      <span id="game-id" class="game-id"></span>
-      <span id="game-status" class="status-badge"></span>
-    </nav>
-    <div id="phase-banner" class="phase-banner" role="heading" aria-level="2"></div>
-    <div id="winner-banner" class="winner-banner" hidden></div>
-    <div id="roster" class="roster" aria-label="Players"></div>
-    <div id="feed" class="feed" role="log" aria-label="Game events"></div>
-  </section>
-
-</main>
-
-<footer class="site-footer">
-  <span>games by LemonSim &middot; every seat played by an AI</span>
-</footer>
-
-<script src="app.js" defer></script>
-</body>
+    <script src="app.js" defer></script>
+  </body>
 </html>

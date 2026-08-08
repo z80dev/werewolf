@@ -356,11 +356,13 @@ function showHome() {
   $("#game-view").hidden = true;
   $("#home-view").hidden = false;
   renderGameList();
+  window.scrollTo({ top: 0 });
 }
 
 function showGame(id) {
   $("#home-view").hidden = true;
   $("#game-view").hidden = false;
+  window.scrollTo({ top: 0 }); // the stage + newest events live at the top
 
   const meta = state.games.find((g) => g.id === id) || {
     id,
@@ -479,6 +481,15 @@ function newSpectator(meta) {
 function resetGameView(spec) {
   $("#game-id").textContent = spec.meta.id;
   clear($("#phase-banner"));
+  const stageNow = $("#stage-now");
+  if (stageNow) stageNow.textContent = "Awaiting the first event\u2026";
+  const stagePhase = $("#stage-phase");
+  if (stagePhase) stagePhase.textContent = "The village stirs\u2026";
+  const stageActor = $("#stage-actor");
+  if (stageActor) {
+    stageActor.hidden = true;
+    clear(stageActor);
+  }
   const wb = $("#winner-banner");
   wb.hidden = true;
   wb.className = "winner-banner";
@@ -668,6 +679,7 @@ function onTurnResult(spec, ev) {
 
 function onGameOver(spec, ev) {
   spec.finished = true;
+  renderStageActor(spec); // the stage stops showing an "acting" seat
   const winner = canonicalWinner(ev.winner);
   noteEliminations(spec, ev.elimination_log);
   if (ev.players && typeof ev.players === "object") {
@@ -885,7 +897,11 @@ function updateBanner(spec) {
   const parts = [];
   if (spec.day != null) parts.push(`Day ${spec.day}`);
   if (spec.phase) parts.push(labelPhase(spec.phase));
-  $("#phase-banner").textContent = parts.join(" \u00B7 ");
+  const text = parts.join(" \u00B7 ");
+  $("#phase-banner").textContent = text;
+  const sp = $("#stage-phase");
+  if (sp) sp.textContent = text || "The village stirs\u2026";
+  renderStageActor(spec);
 }
 
 function showWinner(spec, winner) {
@@ -986,18 +1002,67 @@ function setCastCollapsed(collapsed) {
 
 /* ---------- feed plumbing ---------- */
 
+// Newest events go to the TOP of the feed; older ones slide down underneath.
+// The stage panel mirrors the latest beat so a reader never needs to scroll.
 function appendFeed(spec, node) {
-  spec.feedEl.append(node);
+  spec.feedEl.prepend(node);
+  stageUpdate(spec, node);
 }
 
-// Keep the view pinned to the newest events unless the reader scrolled up.
+// Keep the view pinned to the newest events (which live at the top of the
+// feed) unless the reader scrolled down into history.
 function scrollFeedIfPinned(spec) {
   const slack = 160;
-  const nearBottom =
-    window.innerHeight + window.scrollY >=
-    document.documentElement.scrollHeight - slack;
-  if (nearBottom)
-    window.scrollTo({ top: document.documentElement.scrollHeight });
+  if (window.scrollY <= slack) window.scrollTo({ top: 0 });
+}
+
+/* ---------- the stage (what's happening now) ---------- */
+
+function stageUpdate(spec, node) {
+  const now = $("#stage-now");
+  if (!now) return;
+  let text = "";
+  if (node) {
+    // Read the event as narration: drop avatar discs (initials + sigils),
+    // timestamps and tally marks, then walk the tree inserting spaces between
+    // elements so chips collapse to plain names ("Felix village discussion …").
+    const clone = node.cloneNode(true);
+    for (const el of clone.querySelectorAll(
+      ".avatar, .ev-time, .elim-mark",
+    ))
+      el.remove();
+    text = spacedText(clone).replace(/\s+([.,;:!?])/g, "$1");
+  }
+  now.textContent = text
+    ? text.length > 240
+      ? text.slice(0, 240) + "…"
+      : text
+    : "The village is quiet…";
+}
+
+// textContent with a space inserted around every element boundary.
+function spacedText(el) {
+  let out = "";
+  for (const child of el.childNodes) {
+    if (child.nodeType === Node.TEXT_NODE) out += child.textContent;
+    else if (child.nodeType === Node.ELEMENT_NODE) out += " " + spacedText(child);
+  }
+  return out.replace(/\s+/g, " ").trim();
+}
+
+// The seat whose turn it is, shown on the stage as a character chip.
+function renderStageActor(spec) {
+  const box = $("#stage-actor");
+  if (!box) return;
+  clear(box);
+  const seat = spec.activePlayer;
+  if (!seat || spec.finished || seatIsDead(spec, seat)) {
+    box.hidden = true;
+    return;
+  }
+  box.hidden = false;
+  box.append(el("span", "stage-actor-label", "acting"));
+  box.append(charChip(spec, seat, "sm"));
 }
 
 /* ================= game list (home) ================= */

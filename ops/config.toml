@@ -1,0 +1,4 @@
+# Lemon config for the werewolf runner container.
+# OPENCODE_API_KEY is resolved from the environment (env_fallback).
+[providers.opencode_go]
+api_key_secret = "OPENCODE_API_KEY"

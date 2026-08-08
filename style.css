@@ -1,0 +1,528 @@
+/* Werewolf Stream — moonlit village theme
+   Dark, tinted neutrals; lantern green for the village, blood red for the wolves. */
+
+:root {
+  /* palette */
+  --bg:            #0a0e12;
+  --bg-raised:     #10171e;
+  --bg-inset:      #0c1218;
+  --line:          #1e2a30;
+  --line-bright:   #2c3c44;
+  --ink:           #dce6dd;
+  --ink-dim:       #8b9a90;
+  --ink-faint:     #5d6c63;
+  --accent:        #7fca8f;
+  --accent-bright: #abe7b8;
+  --accent-dim:    #2c4a36;
+  --wolf:          #e0705c;
+  --wolf-bright:   #f49a89;
+  --wolf-dim:      #4a2420;
+  --night:         #7d9cc4;
+  --night-dim:     #22303f;
+  --gold:          #d4af6a;
+
+  /* spacing scale (4px base) */
+  --s1: 4px;  --s2: 8px;  --s3: 12px; --s4: 16px;
+  --s5: 24px; --s6: 32px; --s7: 48px;
+
+  --radius: 8px;
+  --radius-sm: 5px;
+
+  --font-serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Times New Roman", serif;
+  --font-mono: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+}
+
+* { box-sizing: border-box; }
+
+html { color-scheme: dark; }
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(1100px 500px at 85% -10%, #12202b 0%, transparent 60%),
+    var(--bg);
+  color: var(--ink);
+  font-family: var(--font-serif);
+  font-size: 16px;
+  line-height: 1.55;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { color: var(--accent-bright); }
+
+/* ---------- header ---------- */
+
+.site-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s4);
+  padding: var(--s4) var(--s5);
+  border-bottom: 1px solid var(--line);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  color: var(--ink);
+}
+.brand:hover { color: var(--ink); }
+
+.moon {
+  width: 40px;
+  height: 40px;
+  flex: none;
+  border-radius: 50%;
+  background: radial-gradient(circle at 36% 34%, #f2ecd7 0%, #d9d2b4 52%, #b3ab8d 78%, #8f8871 100%);
+  box-shadow: 0 0 18px 3px rgba(217, 210, 180, 0.22), 0 0 46px 8px rgba(125, 156, 196, 0.10);
+  position: relative;
+}
+.moon::after { /* craters */
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background:
+    radial-gradient(7px 7px at 62% 30%, rgba(120, 112, 88, 0.55) 40%, transparent 60%),
+    radial-gradient(5px 5px at 34% 62%, rgba(120, 112, 88, 0.45) 40%, transparent 60%),
+    radial-gradient(4px 4px at 70% 66%, rgba(120, 112, 88, 0.4) 40%, transparent 60%);
+}
+
+.brand-text { display: flex; flex-direction: column; }
+.brand-name {
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  font-variant: small-caps;
+}
+.brand-tag {
+  font-size: 12px;
+  color: var(--ink-dim);
+  letter-spacing: 0.08em;
+}
+
+.net-status:empty { display: none; }
+.net-status {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  padding: var(--s1) var(--s3);
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+/* ---------- layout ---------- */
+
+#app {
+  flex: 1;
+  width: 100%;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: var(--s5) var(--s5) var(--s7);
+}
+
+.site-footer {
+  border-top: 1px solid var(--line);
+  padding: var(--s4) var(--s5);
+  color: var(--ink-faint);
+  font-size: 13px;
+  text-align: center;
+}
+
+/* ---------- status badges ---------- */
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s2);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 3px var(--s3);
+  border-radius: 999px;
+  border: 1px solid var(--line-bright);
+  color: var(--ink-dim);
+}
+.status-badge.is-live {
+  border-color: var(--accent);
+  color: var(--accent-bright);
+}
+.status-badge.is-live::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: pulse 1.6s ease-out infinite;
+}
+.status-badge.is-demo {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+.status-badge:empty { display: none; }
+
+@keyframes pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(127, 202, 143, 0.55); opacity: 1; }
+  70%  { box-shadow: 0 0 0 7px rgba(127, 202, 143, 0);    opacity: 0.75; }
+  100% { box-shadow: 0 0 0 0 rgba(127, 202, 143, 0);      opacity: 1; }
+}
+
+/* ---------- game list (home) ---------- */
+
+.game-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+}
+
+.list-empty {
+  color: var(--ink-dim);
+  font-style: italic;
+  padding: var(--s6) 0;
+}
+
+.game-card {
+  display: block;
+  color: var(--ink);
+  background: var(--bg-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: var(--s4) var(--s5);
+  transition: border-color 120ms ease-out, background 120ms ease-out;
+}
+.game-card:hover {
+  border-color: var(--line-bright);
+  background: #131b23;
+  color: var(--ink);
+}
+.game-card.is-live { border-left: 3px solid var(--accent); }
+
+.gc-head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--s3);
+  flex-wrap: wrap;
+}
+.gc-title { font-size: 17px; font-weight: 600; letter-spacing: 0.02em; }
+.gc-time { color: var(--ink-dim); font-size: 13px; }
+.gc-head .status-badge { margin-left: auto; }
+
+.gc-players {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2);
+  margin-top: var(--s3);
+}
+
+.player-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  padding: 2px var(--s3) 2px var(--s2);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--bg-inset);
+  color: var(--ink);
+}
+.player-chip .chip-role { color: var(--ink-dim); font-size: 12px; }
+.player-chip.role-werewolf { border-color: var(--wolf-dim); }
+.player-chip.role-werewolf .chip-role { color: var(--wolf); }
+
+.gc-meta {
+  margin-top: var(--s3);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--ink-faint);
+  display: flex;
+  gap: var(--s4);
+  flex-wrap: wrap;
+}
+.gc-winner { font-family: var(--font-serif); }
+.gc-winner.winner-village    { color: var(--accent); }
+.gc-winner.winner-werewolves { color: var(--wolf); }
+
+/* ---------- spectator view ---------- */
+
+.game-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  flex-wrap: wrap;
+}
+.back-link { font-size: 14px; }
+.game-id {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--ink-faint);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 40ch;
+}
+.game-nav .status-badge { margin-left: auto; }
+
+.phase-banner {
+  margin-top: var(--s4);
+  padding: var(--s3) var(--s4);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--night);
+  border-radius: var(--radius-sm);
+  background: linear-gradient(90deg, var(--night-dim) 0%, transparent 70%);
+  font-size: 19px;
+  font-variant: small-caps;
+  letter-spacing: 0.06em;
+}
+.phase-banner:empty { display: none; }
+
+.winner-banner {
+  margin-top: var(--s4);
+  padding: var(--s4) var(--s5);
+  border-radius: var(--radius);
+  font-size: 20px;
+  font-variant: small-caps;
+  letter-spacing: 0.06em;
+  text-align: center;
+  border: 1px solid;
+}
+.winner-banner.winner-village {
+  border-color: var(--accent-dim);
+  background: rgba(127, 202, 143, 0.08);
+  color: var(--accent-bright);
+}
+.winner-banner.winner-werewolves {
+  border-color: var(--wolf-dim);
+  background: rgba(224, 112, 92, 0.10);
+  color: var(--wolf-bright);
+}
+
+/* roster */
+
+.roster {
+  margin-top: var(--s4);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--s2);
+}
+
+.pcard {
+  background: var(--bg-raised);
+  border: 1px solid var(--line);
+  border-top: 2px solid var(--line-bright);
+  border-radius: var(--radius-sm);
+  padding: var(--s3);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.pcard.role-werewolf { border-top-color: var(--wolf); }
+.pcard.role-villager { border-top-color: var(--accent); }
+.pcard.role-doctor   { border-top-color: var(--night); }
+.pcard.role-seer     { border-top-color: var(--gold); }
+
+.pcard.is-active { border-color: var(--line-bright); background: #141d25; }
+.pcard.is-dead { opacity: 0.45; }
+.pcard.is-dead .p-name { text-decoration: line-through; }
+
+.p-top {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+}
+.p-icon { font-size: 16px; line-height: 1; }
+.p-name {
+  font-weight: 600;
+  font-size: 15px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.p-active-dot {
+  margin-left: auto;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 6px 1px rgba(212, 175, 106, 0.5);
+  display: none;
+}
+.pcard.is-active .p-active-dot { display: block; }
+
+.p-role {
+  font-size: 12px;
+  font-variant: small-caps;
+  letter-spacing: 0.08em;
+  color: var(--ink-dim);
+}
+.pcard.role-werewolf .p-role { color: var(--wolf); }
+
+.p-model {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-faint);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.p-state {
+  font-size: 12px;
+  color: var(--ink-faint);
+  font-style: italic;
+  margin-top: 2px;
+}
+.pcard.is-dead .p-state { color: var(--wolf); font-style: normal; }
+
+/* feed */
+
+.feed {
+  margin-top: var(--s5);
+  max-width: 780px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+}
+
+.ev {
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--line-bright);
+  border-radius: var(--radius-sm);
+  background: var(--bg-raised);
+  padding: var(--s3) var(--s4);
+}
+.ev-head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--s2);
+  margin-bottom: 2px;
+}
+.ev-who { font-weight: 600; font-size: 15px; }
+.ev-tag {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 1px var(--s2);
+}
+.ev-time {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-faint);
+}
+.ev-text { margin: var(--s1) 0 0; }
+.ev-text:last-child { margin-bottom: 0; }
+
+/* speech bubbles, tinted by faction */
+.ev-speech.role-werewolf { border-left-color: var(--wolf); }
+.ev-speech.role-werewolf .ev-who { color: var(--wolf-bright); }
+.ev-speech.role-villager,
+.ev-speech.role-doctor,
+.ev-speech.role-seer { border-left-color: var(--accent); }
+
+/* wolf whispers: secretive, blood-tinted */
+.ev-wolf {
+  background: rgba(224, 112, 92, 0.06);
+  border-color: var(--wolf-dim);
+  border-left-color: var(--wolf);
+}
+.ev-wolf .ev-who { color: var(--wolf-bright); }
+.ev-wolf .ev-tag { color: var(--wolf); border-color: var(--wolf-dim); }
+.ev-wolf .ev-text { font-style: italic; }
+
+/* night actions */
+.ev-night {
+  background: rgba(125, 156, 196, 0.05);
+  border-color: var(--night-dim);
+  border-left-color: var(--night);
+}
+.ev-night .ev-tag { color: var(--night); border-color: var(--night-dim); }
+.ev-night ul { margin: var(--s1) 0 0; padding-left: var(--s5); }
+.ev-night li { margin: 2px 0; }
+
+/* votes */
+.ev-vote { border-left-color: var(--gold); }
+.ev-vote .ev-tag { color: var(--gold); border-color: var(--line-bright); }
+.tally { display: flex; flex-wrap: wrap; gap: var(--s2); margin-top: var(--s2); }
+.tally .chip {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  padding: 1px var(--s2);
+  border: 1px solid var(--line-bright);
+  border-radius: 999px;
+  color: var(--ink-dim);
+  background: var(--bg-inset);
+}
+
+/* eliminations & last words */
+.ev-elim {
+  border-color: var(--wolf-dim);
+  border-left-color: var(--wolf);
+  background: rgba(224, 112, 92, 0.10);
+  text-align: center;
+  font-size: 17px;
+  font-variant: small-caps;
+  letter-spacing: 0.05em;
+  color: var(--wolf-bright);
+}
+.ev-lastwords { border-left-color: var(--gold); background: rgba(212, 175, 106, 0.05); }
+.ev-lastwords .ev-text { font-style: italic; }
+
+/* quiet system lines (meetings, phase notes) */
+.ev-quiet {
+  border: none;
+  background: none;
+  padding: 0 var(--s4);
+  color: var(--ink-faint);
+  font-style: italic;
+  font-size: 14px;
+}
+
+/* game start / over */
+.ev-start {
+  text-align: center;
+  color: var(--ink-dim);
+  font-variant: small-caps;
+  letter-spacing: 0.08em;
+  border: none;
+  background: none;
+}
+.ev-over { border-width: 1px; text-align: center; font-size: 18px; font-variant: small-caps; letter-spacing: 0.05em; }
+.ev-over.winner-village    { border-color: var(--accent-dim); color: var(--accent-bright); background: rgba(127, 202, 143, 0.08); }
+.ev-over.winner-werewolves { border-color: var(--wolf-dim);   color: var(--wolf-bright);   background: rgba(224, 112, 92, 0.10); }
+
+/* unknown shapes: raw JSON, kept small */
+.ev-generic {
+  border-left-color: var(--line);
+  background: var(--bg-inset);
+}
+.ev-generic pre {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-dim);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* ---------- small screens ---------- */
+
+@media (max-width: 640px) {
+  .site-header { padding: var(--s3) var(--s4); }
+  #app { padding: var(--s4) var(--s3) var(--s6); }
+  .brand-name { font-size: 18px; }
+  .moon { width: 32px; height: 32px; }
+  .game-card { padding: var(--s3) var(--s4); }
+  .roster { grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); }
+  .game-nav .status-badge { margin-left: 0; }
+}

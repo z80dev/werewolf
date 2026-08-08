@@ -1,0 +1,9 @@
+:80 {
+	root * /data
+	file_server
+	header Access-Control-Allow-Origin *
+	header Cache-Control no-cache
+	encode zstd gzip
+	@preflight method OPTIONS
+	respond @preflight 204
+}

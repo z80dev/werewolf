@@ -1,0 +1,24 @@
+.env
+.git
+Caddyfile
+docker-compose.yml
+lemon/.git
+lemon/_build
+lemon/deps
+lemon/node_modules
+lemon/.worktrees
+# Junk / runtime-only dirs not needed to compile or run the sim
+lemon/.expert
+lemon/.lemon
+lemon/.hermes
+lemon/.agents
+lemon/.claude
+lemon/.codex
+lemon/.github
+lemon/native
+lemon/clients
+lemon/tmp
+lemon/docs
+lemon/scripts
+lemon/tools
+lemon/bin
